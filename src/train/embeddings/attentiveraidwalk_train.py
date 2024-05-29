@@ -5,8 +5,8 @@ from torch.optim import SparseAdam
 from src.utils.dataset import *
 
 # parameters
-dataset_base_dir = "../../dataset/raid_test_dump2/"
-embeddings_path = "../../dataset/AttentiveRAiDWalk128_embeddings.pt"
+dataset_base_dir = "../../../dataset/raid_test_dump2/"
+embeddings_path = "../../../dataset/AttentiveRAiDWalk128_embeddings.pt"
 num_epochs = 400
 early_stopping = 20
 batch_size = 512
