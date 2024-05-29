@@ -1,18 +1,15 @@
-from dgl.nn.pytorch import DeepWalk
 import dgl
 import random
 
 import torch
 import torch.nn.functional as F
-import tqdm
 from torch import nn
 from torch.nn import init
-from dgl.sampling import random_walk, PinSAGESampler
+from dgl.sampling import PinSAGESampler
 from dgl.sampling import node2vec_random_walk
 from dgl.random import choice
-from dgl.nn.pytorch import DeepWalk
 
-import utils
+from src.utils import utils
 
 
 class RAiDAttentiveWalk(nn.Module):
@@ -74,8 +71,8 @@ class RAiDAttentiveWalk(nn.Module):
         self.coinstitution_graph = self.graph_metapath_sampling('research_product', 'organization')
         self.part_graph = self.graph_sampling('research_product', 'HasPartOf')
         self.version_graph = self.graph_sampling('research_product', 'IsVersionOf')
-        self.citation_graph = self.graph_sampling('research_product', 'Cites')
-        self.references_graph = self.graph_sampling('research_product', 'References')
+        # self.citation_graph = self.graph_sampling('research_product', 'Cites')
+        # self.references_graph = self.graph_sampling('research_product', 'References')
         self.supplements_graph = self.graph_sampling('research_product', 'IsSupplementedBy')
 
         self.emb_dim = emb_dim
@@ -165,12 +162,12 @@ class RAiDAttentiveWalk(nn.Module):
         # version graph
         sample_indices = utils.tensor_intersection((self.version_graph.out_degrees() != 0).nonzero(as_tuple=True)[0], indices)
         version_random_walk = node2vec_random_walk(self.version_graph, sample_indices, p=1, q=0.25, walk_length=self.walk_length)
-        # citation graph
-        sample_indices = utils.tensor_intersection((self.citation_graph.out_degrees() != 0).nonzero(as_tuple=True)[0], indices)
-        citation_random_walk = node2vec_random_walk(self.citation_graph, sample_indices, p=1, q=1, walk_length=self.walk_length)
-        # references graph
-        sample_indices = utils.tensor_intersection((self.references_graph.out_degrees() != 0).nonzero(as_tuple=True)[0], indices)
-        references_random_walk = node2vec_random_walk(self.references_graph, sample_indices, p=1, q=1, walk_length=self.walk_length)
+        # # citation graph  # TODO maybe not
+        # sample_indices = utils.tensor_intersection((self.citation_graph.out_degrees() != 0).nonzero(as_tuple=True)[0], indices)
+        # citation_random_walk = node2vec_random_walk(self.citation_graph, sample_indices, p=1, q=1, walk_length=self.walk_length)
+        # # references graph  # TODO maybe not
+        # sample_indices = utils.tensor_intersection((self.references_graph.out_degrees() != 0).nonzero(as_tuple=True)[0], indices)
+        # references_random_walk = node2vec_random_walk(self.references_graph, sample_indices, p=1, q=1, walk_length=self.walk_length)
         # supplements graph
         sample_indices = utils.tensor_intersection((self.supplements_graph.out_degrees() != 0).nonzero(as_tuple=True)[0], indices)
         supplements_random_walk = node2vec_random_walk(self.supplements_graph, sample_indices, p=1, q=0.25, walk_length=self.walk_length)
@@ -180,8 +177,8 @@ class RAiDAttentiveWalk(nn.Module):
             coinstitution_random_walk,
             part_random_walk,
             version_random_walk,
-            citation_random_walk,
-            references_random_walk,
+            # citation_random_walk,
+            # references_random_walk,
             supplements_random_walk), 0)
         return random_walks
 

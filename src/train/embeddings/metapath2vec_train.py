@@ -1,7 +1,7 @@
 import dgl
 from torch.utils.data import DataLoader
 from torch.optim import SparseAdam
-from dataset import *
+from src.utils.dataset import *
 from dgl.nn.pytorch import MetaPath2Vec
 
 dataset = OpenAIRESubgraph(raw_dir="dataset/raid_test_dump/", save_dir="dataset/raid_test_dump/")
