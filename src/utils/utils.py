@@ -1,5 +1,6 @@
 import json
 
+import numpy as np
 from dgl import DGLGraph
 from pyspark import SparkContext
 import torch
@@ -34,3 +35,16 @@ def tensor_intersection(t1, t2):
     for elem in t2:
         indices = indices | (t1 == elem)
     return t1[indices]
+
+
+def get_indexes_larger_than_threshold(d, threshold):
+    res = np.argwhere(d > threshold)
+    idx = np.where(np.diff(res[:, 0]) !=0 )[0]
+    res = res[np.r_[0, idx+1]]
+
+    indexes1 = res[:, 0]
+    values1 = res[:, 1]
+    indexes = np.zeros(d.shape[0])
+
+    indexes[indexes1] = values1
+    return indexes
